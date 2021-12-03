@@ -1,0 +1,163 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <math.h>
+
+unsigned int var (void);
+double f (double x);
+void result (double a, double b, unsigned int n, double I );
+double left_rect(double a, double b, unsigned int n);
+double right_rect(double a, double b, unsigned int n);
+double trap (double a, double b, unsigned int n);
+double Sympson(double a, double b, unsigned int n);
+
+int main()
+{
+    unsigned int num_var;
+    const double a=0;
+    const double b=1;
+    unsigned int n=100;
+    double I;
+    double I1,I2;
+    unsigned int N;
+    double eps;
+
+
+    printf("eps=");scanf("%lf",&eps);
+
+    while(eps<0.00001 || eps>0.001 ){
+        printf("eps=");scanf("%u", &eps);
+    }
+
+    num_var = var();
+
+    if (num_var==1){
+        I= left_rect(a, b, n);
+        result(a, b, n, I);
+
+        N=0;
+        do{
+           N+=2;
+           I1= left_rect(a, b, N);
+           I2= left_rect(a, b, N+2);
+        }while (fabs(I2-I1)>eps);
+
+       printf("\n\nN=%u, I1(N)=%.8lf", N, I1);
+    }
+
+    else if (num_var==2){
+        I=right_rect(a,b,n);
+        result(a, b, n, I);
+
+        N=0;
+        do{
+           N+=2;
+           I1= right_rect(a, b, N);
+           I2= right_rect(a, b, N+2);
+        }while (fabs(I2-I1)>eps);
+
+       printf("\n\nN=%u, I1(N)=%.8lf", N, I1);
+    }
+
+    else if (num_var==3){
+        I=trap(a,b,n);
+        result(a, b, n, I);
+
+        N=0;
+        do{
+           N+=2;
+           I1= trap(a, b, N);
+           I2= trap(a, b, N+2);
+        }while (fabs(I2-I1)>eps);
+
+       printf("\n\nN=%u, I1(N)=%.8lf", N, I1);
+    }
+
+
+    else if (num_var==4){
+        I=Sympson(a,b,n);
+        result(a, b, n, I);
+
+        N=0;
+        do{
+           N+=2;
+           I1= Sympson(a, b, N);
+           I2= Sympson(a, b, N+2);
+        }while (fabs(I2-I1)>eps);
+
+       printf("\n\nN=%u, I1(N)=%.8lf", N, I1);
+    }
+
+    return 0;
+}
+
+    unsigned int var(void){
+
+    unsigned int temp;
+
+    printf("\n\n Your method? \n1-Left Rect \n2-Rigt Rect \n3-Trapeze \n4-Sympson \n");
+    scanf("%u", &temp);
+
+    while ( temp<1 || temp>4){
+        printf("\n!!!! Invalid data. Method: 1,2,3 or 4: ");
+        scanf("%u", &temp);
+    }
+}
+
+double f(double x){
+    double y;
+    y= pow(2,x)+pow(x,2);
+    return y;
+}
+
+double left_rect(double a, double b, unsigned int n){
+
+    double h;
+    unsigned int i;
+    double sum=0;
+    h=(b-a)/n;
+    for (i=0; i<=n-1; i++){
+        sum+=f(a+i*h);
+    }
+    return sum*h;
+}
+double right_rect(double a, double b, unsigned int n){
+
+    double h;
+    unsigned int i;
+    double sum=0;
+    h=(b-a)/n;
+    for (i=1; i<=n; i++){
+        sum+=f(a+i*h);
+    }
+    return sum*h;
+}
+double trap(double a, double b, unsigned int n){
+
+    double h;
+    unsigned int i;
+    double sum=f(a)+f(b);
+    h=(b-a)/n;
+    for (i=1; i<=n-1; i++){
+        sum+=2*f(a+i*h);
+    }
+    return sum*h/2;
+}
+double Sympson(double a, double b, unsigned int n){
+
+    double h;
+    unsigned int i;
+    double sum=f(a)+f(b);
+    unsigned int k;
+    h=(b-a)/n;
+    for (i=1; i<=n-1; i++){
+        k=2+2*(i%2);
+        sum+=k*f(a+i*h);
+    }
+    return sum*h/3;
+}
+void result(double a, double b, unsigned int n, double I){
+    system ("cls");
+    printf("a=%.2lf  b=%.2lf  n=%u  I=%.8lf", a, b, n, I);
+
+}
